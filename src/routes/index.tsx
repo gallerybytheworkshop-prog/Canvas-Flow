@@ -1,24 +1,49 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, ClientOnly } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const CanvasFlowBoard = lazy(
+  () => import("@/components/whiteboard/CanvasFlowBoard"),
+);
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "CanvasFlow — Infinite Whiteboard for Visual Thinking" },
+      {
+        name: "description",
+        content:
+          "CanvasFlow is a fast, infinite whiteboard with sticky notes, shapes, drawing tools, and local autosave. Sketch, plan and map ideas in your browser.",
+      },
+      { property: "og:title", content: "CanvasFlow — Infinite Whiteboard" },
+      {
+        property: "og:description",
+        content:
+          "A smooth infinite canvas with sticky notes, shapes, pen tools and local autosave.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+function BoardFallback() {
+  return (
+    <div className="flex h-screen w-screen items-center justify-center bg-background">
+      <p className="text-sm text-muted-foreground">Loading your canvas…</p>
+    </div>
+  );
+}
+
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="h-screen w-screen overflow-hidden">
+      <h1 className="sr-only">CanvasFlow infinite whiteboard</h1>
+      <ClientOnly fallback={<BoardFallback />}>
+        <Suspense fallback={<BoardFallback />}>
+          <CanvasFlowBoard />
+        </Suspense>
+      </ClientOnly>
+    </main>
   );
 }
