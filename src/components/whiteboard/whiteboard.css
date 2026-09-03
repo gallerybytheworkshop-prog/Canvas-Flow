@@ -1,10 +1,9 @@
 /* CanvasFlow chrome tweaks over tldraw defaults */
 
 /* Keep tldraw's style panel clear of our top bar */
-.tlui-style-panel__wrapper {
-  margin-top: 4rem;
-  max-height: calc(100vh - 10rem);
-  overflow-y: auto;
+.tl-container .tlui-style-panel__wrapper,
+.tl-container .tlui-layout__top__right > .tlui-style-panel {
+  margin-top: 4.25rem !important;
   border-radius: 0.75rem;
   box-shadow:
     0 1px 2px rgb(15 23 42 / 0.05),
@@ -12,7 +11,7 @@
 }
 
 /* Move the tldraw watermark out from under our zoom controls */
-.tl-watermark_SEE-LICENSE {
+.tl-container .tl-watermark_SEE-LICENSE {
   left: 12px !important;
   right: auto !important;
   bottom: 12px !important;
