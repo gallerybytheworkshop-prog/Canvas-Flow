@@ -2,15 +2,12 @@ import "tldraw/tldraw.css";
 import "./whiteboard.css";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Tldraw,
-  DefaultStylePanel,
-  type Editor,
-  type TLComponents,
-} from "tldraw";
+import { Tldraw, type Editor, type TLComponents } from "tldraw";
+import { Toaster } from "@/components/ui/sonner";
 import { TopBar } from "./TopBar";
 import { LeftToolbar } from "./LeftToolbar";
 import { ZoomControls } from "./ZoomControls";
+import { activateTool } from "./tools";
 
 const components: TLComponents = {
   Toolbar: null,
@@ -22,7 +19,6 @@ const components: TLComponents = {
   DebugMenu: null,
   SharePanel: null,
   TopPanel: null,
-  StylePanel: DefaultStylePanel,
 };
 
 export default function CanvasFlowBoard() {
@@ -35,38 +31,35 @@ export default function CanvasFlowBoard() {
     e.user.updateUserPreferences({ colorScheme: "light" });
   }, []);
 
-  // Extra shortcuts beyond tldraw defaults (P = pen, O = circle)
+  // Extra shortcuts on top of tldraw defaults: P = pen, O = circle.
   useEffect(() => {
     if (!editor) return;
     const onKeyDown = (ev: KeyboardEvent) => {
       if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-      const target = ev.target as HTMLElement | null;
+      const t = ev.target as HTMLElement | null;
       if (
-        target &&
-        (target.isContentEditable ||
-          ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+        t &&
+        (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName))
       )
         return;
+      if (editor.getEditingShapeId()) return;
       const key = ev.key.toLowerCase();
-      if (key === "p") {
-        editor.setCurrentTool("draw");
-      } else if (key === "o") {
-        editor.run(() => {
-          editor.setStyleForNextShapes(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (editor.styleProps as any) ? undefined! : undefined!,
-          );
-        });
-      }
+      if (key === "p") activateTool(editor, "draw");
+      else if (key === "o") activateTool(editor, "ellipse");
+      else if (key === "escape" && presenting) setPresenting(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [editor]);
+  }, [editor, presenting]);
 
   const toggleFullscreen = useCallback(async () => {
     const el = containerRef.current ?? document.documentElement;
-    if (document.fullscreenElement) await document.exitFullscreen();
-    else await el.requestFullscreen().catch(() => undefined);
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await el.requestFullscreen();
+    } catch {
+      /* ignored */
+    }
   }, []);
 
   return (
@@ -95,6 +88,7 @@ export default function CanvasFlowBoard() {
           onExitPresent={() => setPresenting(false)}
         />
       )}
+      <Toaster />
     </div>
   );
 }
