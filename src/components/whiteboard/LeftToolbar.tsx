@@ -16,9 +16,11 @@ import {
   StickyNote,
   Type,
   MessageSquare,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { activateTool, currentToolId, type ToolId } from "./tools";
+import { linkSelectedShapes } from "./connect";
 import { insertFiles } from "./insert-files";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +46,7 @@ const ITEMS: Item[] = [
   { id: "ellipse", label: "Circle", shortcut: "O", icon: Circle, compact: true },
   { id: "diamond", label: "Diamond", icon: Diamond },
   { id: "image", label: "Upload file (images, STL, PDF, video…)", icon: Upload, compact: true },
+  { id: "link", label: "Link selected items", icon: Link2, compact: true },
   { id: "comment", label: "Comment", icon: MessageSquare },
   { id: "frame", label: "Frame", shortcut: "F", icon: Frame },
 ];
@@ -55,6 +58,13 @@ export function LeftToolbar({ editor }: { editor: Editor }) {
   const onPick = (id: ToolId) => {
     if (id === "image") {
       fileRef.current?.click();
+      return;
+    }
+    if (id === "link") {
+      const n = linkSelectedShapes(editor);
+      if (n === 0)
+        toast("Select two or more items first — they'll be joined with arrows.");
+      else toast(n === 1 ? "Linked 2 items." : `Created ${n} links.`);
       return;
     }
     if (id === "comment") {

@@ -16,6 +16,7 @@ export type ToolId =
   | "triangle"
   | "image"
   | "comment"
+  | "link"
   | "frame";
 
 const GEO: Partial<Record<ToolId, string>> = {
