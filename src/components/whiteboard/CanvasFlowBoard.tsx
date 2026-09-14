@@ -10,10 +10,12 @@ import { ZoomControls } from "./ZoomControls";
 import { activateTool } from "./tools";
 import { FileShapeUtil } from "./shapes/FileShapeUtil";
 import { insertFiles } from "./insert-files";
+import { ConnectorOverlay } from "./ConnectorOverlay";
 
 const shapeUtils = [FileShapeUtil];
 
 const components: TLComponents = {
+  InFrontOfTheCanvas: ConnectorOverlay,
   Toolbar: null,
   MenuPanel: null,
   NavigationPanel: null,

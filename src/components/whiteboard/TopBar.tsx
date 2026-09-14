@@ -9,16 +9,28 @@ import {
   Undo2,
   Grid2x2,
   Magnet,
+  Download,
+  FileImage,
+  FileCode2,
+  Image as ImageIcon,
+  Link as LinkIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  downloadSelection,
+  exportBoard,
+  shareBoardImage,
+  shareBoardLink,
+} from "@/lib/board-export";
 import { cn } from "@/lib/utils";
 
 const NAME_KEY = "canvasflow:board-name";
@@ -145,14 +157,80 @@ export function TopBar({
         </span>
 
         <div className="ml-auto flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => toast("Sharing arrives in a future version.")}
-            className="hidden h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
-          >
-            <Share2 className="h-4 w-4" />
-            Share
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Share</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuLabel>Share</DropdownMenuLabel>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const r = await shareBoardLink(name);
+                  toast(
+                    r === "shared"
+                      ? "Board shared."
+                      : r === "copied"
+                        ? "Board link copied."
+                        : "Couldn't copy the link.",
+                  );
+                }}
+              >
+                <LinkIcon className="mr-2 h-4 w-4" /> Copy board link
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const r = await shareBoardImage(editor, name);
+                  toast(
+                    r === "empty"
+                      ? "Add something to the board first."
+                      : r === "shared"
+                        ? "Picture shared."
+                        : "Picture of the board saved.",
+                  );
+                }}
+              >
+                <ImageIcon className="mr-2 h-4 w-4" /> Share picture of board
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Download</DropdownMenuLabel>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const n = await downloadSelection(editor);
+                  toast(
+                    n === 0
+                      ? "Select an image, model or file first."
+                      : n === 1
+                        ? "Download started."
+                        : `${n} downloads started.`,
+                  );
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" /> Selected files (images, STL…)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const ok = await exportBoard(editor, "png");
+                  if (!ok) toast("Add something to the board first.");
+                }}
+              >
+                <FileImage className="mr-2 h-4 w-4" /> Whole board as PNG
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const ok = await exportBoard(editor, "svg");
+                  if (!ok) toast("Add something to the board first.");
+                }}
+              >
+                <FileCode2 className="mr-2 h-4 w-4" /> Whole board as SVG
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <button
             type="button"
             onClick={onPresent}
