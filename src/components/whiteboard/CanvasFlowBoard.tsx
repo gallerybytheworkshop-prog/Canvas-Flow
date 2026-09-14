@@ -8,6 +8,10 @@ import { TopBar } from "./TopBar";
 import { LeftToolbar } from "./LeftToolbar";
 import { ZoomControls } from "./ZoomControls";
 import { activateTool } from "./tools";
+import { FileShapeUtil } from "./shapes/FileShapeUtil";
+import { insertFiles } from "./insert-files";
+
+const shapeUtils = [FileShapeUtil];
 
 const components: TLComponents = {
   Toolbar: null,
@@ -29,6 +33,11 @@ export default function CanvasFlowBoard() {
   const handleMount = useCallback((e: Editor) => {
     setEditor(e);
     e.user.updateUserPreferences({ colorScheme: "light" });
+    e.updateInstanceState({ isGridMode: true });
+    // Accept every file type dropped or pasted onto the canvas.
+    e.registerExternalContentHandler("files", async (content) => {
+      await insertFiles(e, content.files as File[], content.point);
+    });
   }, []);
 
   // Extra shortcuts on top of tldraw defaults: P = pen, O = circle.
@@ -69,6 +78,7 @@ export default function CanvasFlowBoard() {
     >
       <Tldraw
         persistenceKey="canvasflow-board-v1"
+        shapeUtils={shapeUtils}
         components={components}
         cameraOptions={{ zoomSteps: [0.1, 0.25, 0.5, 1, 2, 3, 4] }}
         onMount={handleMount}
