@@ -27,19 +27,24 @@ import { cn } from "@/lib/utils";
 
 export type CFFileView = "card" | "image" | "3d";
 
-export type CFFileShape = TLBaseShape<
-  "cf-file",
-  {
-    w: number;
-    h: number;
-    fileKey: string;
-    name: string;
-    size: number;
-    mime: string;
-    kind: string;
-    view: CFFileView;
+export interface CFFileProps {
+  w: number;
+  h: number;
+  fileKey: string;
+  name: string;
+  size: number;
+  mime: string;
+  kind: string;
+  view: CFFileView;
+}
+
+declare module "@tldraw/tlschema" {
+  interface TLGlobalShapePropsMap {
+    "cf-file": CFFileProps;
   }
->;
+}
+
+export type CFFileShape = TLBaseShape<"cf-file", CFFileProps>;
 
 export const FILE_SHAPE_DEFAULT_SIZE = { w: 320, h: 260 };
 
@@ -287,7 +292,9 @@ export class FileShapeUtil extends BaseBoxShapeUtil<CFFileShape> {
     );
   }
 
-  override indicator(shape: CFFileShape) {
-    return <rect width={shape.props.w} height={shape.props.h} rx={12} ry={12} />;
+  override getIndicatorPath(shape: CFFileShape) {
+    const path = new Path2D();
+    path.roundRect(0, 0, shape.props.w, shape.props.h, 12);
+    return path;
   }
 }
