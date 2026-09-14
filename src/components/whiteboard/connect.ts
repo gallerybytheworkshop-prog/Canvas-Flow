@@ -55,7 +55,9 @@ export function linkSelectedShapes(editor: Editor): number {
   const created: TLShapeId[] = [];
   editor.run(() => {
     for (let i = 0; i < ordered.length - 1; i++) {
-      created.push(linkPair(editor, ordered[i].id, ordered[i + 1].id));
+      const a = ordered[i]!;
+      const b = ordered[i + 1]!;
+      created.push(linkPair(editor, a.id, b.id));
     }
   });
   editor.setSelectedShapes(created);
