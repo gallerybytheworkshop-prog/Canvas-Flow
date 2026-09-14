@@ -60,6 +60,13 @@ export function LeftToolbar({ editor }: { editor: Editor }) {
       fileRef.current?.click();
       return;
     }
+    if (id === "link") {
+      const n = linkSelectedShapes(editor);
+      if (n === 0)
+        toast("Select two or more items first — they'll be joined with arrows.");
+      else toast(n === 1 ? "Linked 2 items." : `Created ${n} links.`);
+      return;
+    }
     if (id === "comment") {
       toast("Comments are coming in a later version — added a note instead.");
     }
