@@ -16,9 +16,11 @@ import {
   StickyNote,
   Type,
   MessageSquare,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { activateTool, currentToolId, type ToolId } from "./tools";
+import { linkSelectedShapes } from "./connect";
 import { insertFiles } from "./insert-files";
 import { cn } from "@/lib/utils";
 
