@@ -8,7 +8,7 @@ import {
   Frame,
   Hand,
   Highlighter,
-  Image as ImageIcon,
+  Upload,
   Minus,
   MousePointer2,
   Pen,
@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { activateTool, currentToolId, type ToolId } from "./tools";
+import { insertFiles } from "./insert-files";
 import { cn } from "@/lib/utils";
 
 type Item = {
@@ -42,7 +43,7 @@ const ITEMS: Item[] = [
   { id: "rectangle", label: "Rectangle", shortcut: "R", icon: Square, compact: true },
   { id: "ellipse", label: "Circle", shortcut: "O", icon: Circle, compact: true },
   { id: "diamond", label: "Diamond", icon: Diamond },
-  { id: "image", label: "Image", icon: ImageIcon },
+  { id: "image", label: "Upload file (images, STL, PDF, video…)", icon: Upload, compact: true },
   { id: "comment", label: "Comment", icon: MessageSquare },
   { id: "frame", label: "Frame", shortcut: "F", icon: Frame },
 ];
@@ -67,19 +68,11 @@ export function LeftToolbar({ editor }: { editor: Editor }) {
       <input
         ref={fileRef}
         type="file"
-        accept="image/png,image/jpeg,image/webp"
         multiple
         className="hidden"
         onChange={async (e) => {
           const files = Array.from(e.target.files ?? []);
-          if (files.length) {
-            await editor.putExternalContent({
-              type: "files",
-              files,
-              point: editor.getViewportPageBounds().center,
-              ignoreParent: false,
-            });
-          }
+          if (files.length) await insertFiles(editor, files);
           e.target.value = "";
         }}
       />
