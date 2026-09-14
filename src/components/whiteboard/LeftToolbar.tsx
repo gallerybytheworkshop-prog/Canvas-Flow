@@ -46,6 +46,7 @@ const ITEMS: Item[] = [
   { id: "ellipse", label: "Circle", shortcut: "O", icon: Circle, compact: true },
   { id: "diamond", label: "Diamond", icon: Diamond },
   { id: "image", label: "Upload file (images, STL, PDF, video…)", icon: Upload, compact: true },
+  { id: "link", label: "Link selected items", icon: Link2, compact: true },
   { id: "comment", label: "Comment", icon: MessageSquare },
   { id: "frame", label: "Frame", shortcut: "F", icon: Frame },
 ];
