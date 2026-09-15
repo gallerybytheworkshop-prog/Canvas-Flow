@@ -36,13 +36,17 @@ async function shapeFile(
   if (shape.type === "image" || shape.type === "video") {
     const assetId = props["assetId"] as string | undefined;
     if (!assetId) return null;
-    const asset = editor.getAsset(assetId as never);
-    const src = (asset?.props as { src?: string } | undefined)?.src;
+    const asset = (
+      editor as unknown as {
+        getAsset: (id: string) => { props?: { src?: string; name?: string } } | undefined;
+      }
+    ).getAsset(assetId);
+    const src = asset?.props?.src;
     if (!src) return null;
     const res = await fetch(src);
     const blob = await res.blob();
     const name =
-      (asset?.props as { name?: string } | undefined)?.name ??
+      asset?.props?.name ??
       `${shape.type}.${(blob.type.split("/")[1] ?? "png").replace("jpeg", "jpg")}`;
     return { blob, name: safeName(name) };
   }
