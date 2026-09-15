@@ -169,7 +169,7 @@ export function ConnectorOverlay() {
             });
           }}
           style={{ left: h.x, top: h.y }}
-          className="absolute h-[13px] w-[13px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-card shadow-sm transition-transform hover:scale-125"
+          className="pointer-events-auto absolute z-[400] h-[13px] w-[13px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-card shadow-sm transition-transform hover:scale-125"
         />
       ))}
     </>
