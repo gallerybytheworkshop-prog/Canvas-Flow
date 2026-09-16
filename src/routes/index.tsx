@@ -1,5 +1,6 @@
-import { createFileRoute, ClientOnly } from "@tanstack/react-router";
+import { createFileRoute, ClientOnly, Navigate } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 const CanvasFlowBoard = lazy(
   () => import("@/components/whiteboard/CanvasFlowBoard"),
@@ -36,6 +37,16 @@ function BoardFallback() {
 }
 
 function Index() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <BoardFallback />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
   return (
     <main className="h-screen w-screen overflow-hidden">
       <h1 className="sr-only">CanvasFlow infinite whiteboard</h1>

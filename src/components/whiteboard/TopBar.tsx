@@ -14,8 +14,12 @@ import {
   FileCode2,
   Image as ImageIcon,
   Link as LinkIcon,
+  LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -76,6 +80,14 @@ export function TopBar({
 }) {
   const [name, setName] = useState("Untitled Board");
   const [starred, setStarred] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast("Logged out.");
+    navigate({ to: "/auth", replace: true });
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem(NAME_KEY);
@@ -252,6 +264,11 @@ export function TopBar({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>Canvas settings</DropdownMenuLabel>
+              {user?.email && (
+                <p className="truncate px-2 pb-1 text-xs text-muted-foreground">
+                  {user.email}
+                </p>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={isGrid}
@@ -269,6 +286,10 @@ export function TopBar({
               >
                 <Magnet className="mr-2 h-4 w-4" /> Snap to objects
               </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" /> Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
