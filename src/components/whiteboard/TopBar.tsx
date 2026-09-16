@@ -286,6 +286,10 @@ export function TopBar({
               >
                 <Magnet className="mr-2 h-4 w-4" /> Snap to objects
               </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" /> Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
