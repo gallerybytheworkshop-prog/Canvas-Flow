@@ -8,6 +8,7 @@ import {
   Star,
   Undo2,
   Grid2x2,
+  LayoutGrid,
   Magnet,
   Download,
   FileImage,
@@ -269,6 +270,12 @@ export function TopBar({
                   {user.email}
                 </p>
               )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => navigate({ to: "/workspaces" })}
+              >
+                <LayoutGrid className="mr-2 h-4 w-4" /> My workspaces
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={isGrid}
