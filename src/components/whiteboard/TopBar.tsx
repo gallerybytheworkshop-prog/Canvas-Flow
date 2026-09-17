@@ -270,6 +270,12 @@ export function TopBar({
                 </p>
               )}
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => navigate({ to: "/workspaces" })}
+              >
+                <LayoutGrid className="mr-2 h-4 w-4" /> My workspaces
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={isGrid}
                 onCheckedChange={(v) =>
