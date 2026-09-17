@@ -8,6 +8,7 @@ import {
   Star,
   Undo2,
   Grid2x2,
+  LayoutGrid,
   Magnet,
   Download,
   FileImage,
