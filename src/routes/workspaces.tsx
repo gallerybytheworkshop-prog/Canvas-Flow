@@ -188,7 +188,12 @@ function WorkspacesPage() {
               <li key={ws.id}>
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/" })}
+                  onClick={() =>
+                    navigate({
+                      to: "/workspaces/$workspaceId",
+                      params: { workspaceId: ws.id },
+                    })
+                  }
                   className="w-full rounded-2xl border border-border bg-card p-5 text-left transition-colors hover:border-primary/50 hover:bg-accent"
                 >
                   <span className="mb-3 grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-sm font-semibold text-primary">
