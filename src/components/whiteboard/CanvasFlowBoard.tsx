@@ -11,6 +11,8 @@ import { activateTool } from "./tools";
 import { FileShapeUtil } from "./shapes/FileShapeUtil";
 import { insertFiles } from "./insert-files";
 import { ConnectorOverlay } from "./ConnectorOverlay";
+import { loadBoardShapes, startBoardSync } from "@/lib/board-store";
+import { useAuth } from "@/hooks/use-auth";
 
 const shapeUtils = [FileShapeUtil];
 
