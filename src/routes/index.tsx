@@ -42,6 +42,8 @@ function BoardFallback() {
 
 function Index() {
   const { isAuthenticated, loading } = useAuth();
+  const { board } = Route.useSearch();
+
 
   if (loading) {
     return <BoardFallback />;
