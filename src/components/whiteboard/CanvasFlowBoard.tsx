@@ -29,10 +29,34 @@ const components: TLComponents = {
   TopPanel: null,
 };
 
-export default function CanvasFlowBoard() {
+export default function CanvasFlowBoard({ boardId }: { boardId?: string }) {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [presenting, setPresenting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+
+  // Load this board's saved objects, then keep them in sync with Supabase.
+  useEffect(() => {
+    if (!editor || !boardId || !user) return;
+    let stop: (() => void) | undefined;
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const rowIds = await loadBoardShapes(editor, boardId);
+        if (cancelled) return;
+        stop = startBoardSync({ editor, boardId, userId: user.id, rowIds });
+      } catch (err) {
+        console.error("[CanvasFlow] couldn't load this board", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      stop?.();
+    };
+  }, [editor, boardId, user]);
+
 
   const handleMount = useCallback((e: Editor) => {
     setEditor(e);
