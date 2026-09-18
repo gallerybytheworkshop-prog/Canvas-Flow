@@ -11,6 +11,8 @@ import { activateTool } from "./tools";
 import { FileShapeUtil } from "./shapes/FileShapeUtil";
 import { insertFiles } from "./insert-files";
 import { ConnectorOverlay } from "./ConnectorOverlay";
+import { loadBoardShapes, startBoardSync } from "@/lib/board-store";
+import { useAuth } from "@/hooks/use-auth";
 
 const shapeUtils = [FileShapeUtil];
 
@@ -27,10 +29,34 @@ const components: TLComponents = {
   TopPanel: null,
 };
 
-export default function CanvasFlowBoard() {
+export default function CanvasFlowBoard({ boardId }: { boardId?: string }) {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [presenting, setPresenting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+
+  // Load this board's saved objects, then keep them in sync with Supabase.
+  useEffect(() => {
+    if (!editor || !boardId || !user) return;
+    let stop: (() => void) | undefined;
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const rowIds = await loadBoardShapes(editor, boardId);
+        if (cancelled) return;
+        stop = startBoardSync({ editor, boardId, userId: user.id, rowIds });
+      } catch (err) {
+        console.error("[CanvasFlow] couldn't load this board", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      stop?.();
+    };
+  }, [editor, boardId, user]);
+
 
   const handleMount = useCallback((e: Editor) => {
     setEditor(e);
@@ -79,7 +105,9 @@ export default function CanvasFlowBoard() {
       className="relative h-screen w-screen overflow-hidden bg-background"
     >
       <Tldraw
-        persistenceKey="canvasflow-board-v1"
+        persistenceKey={
+          boardId ? `canvasflow-board-${boardId}` : "canvasflow-board-v1"
+        }
         shapeUtils={shapeUtils}
         components={components}
         cameraOptions={{ zoomSteps: [0.1, 0.25, 0.5, 1, 2, 3, 4] }}

@@ -42,6 +42,8 @@ function BoardFallback() {
 
 function Index() {
   const { isAuthenticated, loading } = useAuth();
+  const { board } = Route.useSearch();
+
 
   if (loading) {
     return <BoardFallback />;
@@ -56,7 +58,7 @@ function Index() {
       <h1 className="sr-only">CanvasFlow infinite whiteboard</h1>
       <ClientOnly fallback={<BoardFallback />}>
         <Suspense fallback={<BoardFallback />}>
-          <CanvasFlowBoard />
+          <CanvasFlowBoard {...(board ? { boardId: board } : {})} />
         </Suspense>
       </ClientOnly>
     </main>

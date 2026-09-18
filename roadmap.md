@@ -1,5 +1,7 @@
 # CanvasFlow roadmap
 
 - [x] Email/password auth (login, sign-up, logout, session persistence, board gated) — done, no DB changes
-- [ ] Database schema (profiles, workspaces, boards, canvas_objects, comments, activity_logs) — ON HOLD: earlier migration was interrupted; user asked not to modify tables. Revisit when user approves.
-- [ ] Full login/logout browser test — blocked: needs a confirmed account; user's Supabase requires email confirmation and user declined confirming the test account via SQL.
+- [x] Workspaces page + per-workspace boards page
+- [x] Per-board canvas persistence via `canvas_objects` (load on open, debounced batched saves, local-first)
+- [ ] Database schema changes — ON HOLD per user instruction (existing tables used as-is)
+- [ ] Signed-in browser test of board persistence — blocked: no test session available for this Supabase project
