@@ -58,7 +58,7 @@ function Index() {
       <h1 className="sr-only">CanvasFlow infinite whiteboard</h1>
       <ClientOnly fallback={<BoardFallback />}>
         <Suspense fallback={<BoardFallback />}>
-          <CanvasFlowBoard />
+          <CanvasFlowBoard {...(board ? { boardId: board } : {})} />
         </Suspense>
       </ClientOnly>
     </main>
