@@ -105,7 +105,9 @@ export default function CanvasFlowBoard({ boardId }: { boardId?: string }) {
       className="relative h-screen w-screen overflow-hidden bg-background"
     >
       <Tldraw
-        persistenceKey="canvasflow-board-v1"
+        persistenceKey={
+          boardId ? `canvasflow-board-${boardId}` : "canvasflow-board-v1"
+        }
         shapeUtils={shapeUtils}
         components={components}
         cameraOptions={{ zoomSteps: [0.1, 0.25, 0.5, 1, 2, 3, 4] }}
