@@ -1,5 +1,6 @@
 import type { Editor, TLShape, TLShapeId } from "tldraw";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 /**
  * Per-board persistence against the existing `canvas_objects` table.
@@ -118,7 +119,7 @@ export function startBoardSync({
             board_id: boardId,
             created_by: userId,
             object_type: shape.type,
-            data: shape as unknown as Record<string, unknown>,
+            data: shape as unknown as Json,
             position_x: shape.x,
             position_y: shape.y,
             width: bounds?.width ?? null,
